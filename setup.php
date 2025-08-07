@@ -166,7 +166,7 @@ if ($isWebRequest && file_exists(USERS_FILE)) {
         echo "</div>";
         echo "<div class='credentials-item'>";
         echo "<span><strong>Password:</strong></span>";
-        echo "<span class='credentials-code'>" . DEFAULT_ADMIN_PASSWORD . "</span>";
+        echo "<span class='credentials-code'>SiteMonitor@2025!</span>";
         echo "</div>";
         echo "<div class='security-alert'>";
         echo "<i class='fas fa-exclamation-triangle'></i> <strong>Important:</strong> Change the default password immediately after first login!";

@@ -3,6 +3,9 @@ require_once 'config.php';
 require_once 'auth.php';
 require_once 'monitor.php';
 
+// Initialize session early
+Auth::initSession();
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');

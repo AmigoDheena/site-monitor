@@ -459,13 +459,28 @@ class SiteMonitor {
             options.body = JSON.stringify(data);
         }
         
-        const response = await fetch(url, options);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        try {
+            const response = await fetch(url, options);
+            const result = await response.json();
+            
+            // For login endpoint, don't throw error on 401 if we got a JSON response
+            if (endpoint === 'login' && response.status === 401 && result) {
+                return result;
+            }
+            
+            // For other endpoints, throw error on non-ok status
+            if (!response.ok) {
+                throw new Error(result.message || `HTTP error! status: ${response.status}`);
+            }
+            
+            return result;
+        } catch (error) {
+            // If it's a network error or JSON parsing error
+            if (error.name === 'TypeError' || error.name === 'SyntaxError') {
+                throw new Error('Connection error. Please check your internet connection.');
+            }
+            throw error;
         }
-        
-        return await response.json();
     }
     
     setLoading(element, isLoading, loadingText = 'Loading...') {
