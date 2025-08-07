@@ -4,6 +4,13 @@ require_once 'config.php';
 class Auth {
     private static $instance = null;
     
+    // Static method to ensure session is started early
+    public static function initSession() {
+        if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
+            session_start();
+        }
+    }
+    
     private function __construct() {
         $this->initializeDataDirectory();
         $this->initializeUsers();
@@ -50,7 +57,7 @@ class Auth {
     }
     
     private function startSession() {
-        if (session_status() === PHP_SESSION_NONE) {
+        if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
             session_start();
         }
     }
