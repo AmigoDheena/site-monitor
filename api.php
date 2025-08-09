@@ -1,10 +1,6 @@
 <?php
 require_once 'config.php';
-require_once 'auth.php';
 require_once 'monitor.php';
-
-// Initialize session early
-Auth::initSession();
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
@@ -17,7 +13,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-$auth = Auth::getInstance();
 $monitor = SiteMonitor::getInstance();
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -48,90 +43,7 @@ function validateFields($data, $required) {
 
 try {
     switch ($path) {
-        case 'login':
-            if ($method !== 'POST') {
-                sendResponse(['error' => 'Method not allowed'], 405);
-            }
-            
-            $data = getRequestBody();
-            $missing = validateFields($data, ['username', 'password']);
-            
-            if (!empty($missing)) {
-                sendResponse([
-                    'success' => false,
-                    'message' => 'Missing required fields: ' . implode(', ', $missing)
-                ], 400);
-            }
-            
-            $rememberMe = $data['remember_me'] ?? false;
-            $result = $auth->login($data['username'], $data['password'], $rememberMe);
-            
-            sendResponse($result, $result['success'] ? 200 : 401);
-            break;
-            
-        case 'logout':
-            if ($method !== 'POST') {
-                sendResponse(['error' => 'Method not allowed'], 405);
-            }
-            
-            $result = $auth->logout();
-            sendResponse([
-                'success' => $result,
-                'message' => $result ? 'Logged out successfully' : 'Already logged out'
-            ]);
-            break;
-            
-        case 'me':
-            if ($method !== 'GET') {
-                sendResponse(['error' => 'Method not allowed'], 405);
-            }
-            
-            if (!$auth->isLoggedIn()) {
-                sendResponse(['error' => 'Unauthorized'], 401);
-            }
-            
-            $user = $auth->getCurrentUser();
-            sendResponse([
-                'success' => true,
-                'user' => $user
-            ]);
-            break;
-            
-        case 'change-password':
-            if ($method !== 'POST') {
-                sendResponse(['error' => 'Method not allowed'], 405);
-            }
-            
-            if (!$auth->isLoggedIn()) {
-                sendResponse(['error' => 'Unauthorized'], 401);
-            }
-            
-            $data = getRequestBody();
-            $missing = validateFields($data, ['current_password', 'new_password']);
-            
-            if (!empty($missing)) {
-                sendResponse([
-                    'success' => false,
-                    'message' => 'Missing required fields: ' . implode(', ', $missing)
-                ], 400);
-            }
-            
-            if (strlen($data['new_password']) < 8) {
-                sendResponse([
-                    'success' => false,
-                    'message' => 'New password must be at least 8 characters long'
-                ], 400);
-            }
-            
-            $result = $auth->changePassword($data['current_password'], $data['new_password']);
-            sendResponse($result, $result['success'] ? 200 : 400);
-            break;
-            
         case 'sites':
-            if (!$auth->isLoggedIn()) {
-                sendResponse(['error' => 'Unauthorized'], 401);
-            }
-            
             switch ($method) {
                 case 'GET':
                     $sites = $monitor->getAllSites();
@@ -165,10 +77,6 @@ try {
             break;
             
         case 'site':
-            if (!$auth->isLoggedIn()) {
-                sendResponse(['error' => 'Unauthorized'], 401);
-            }
-            
             $siteId = $_GET['id'] ?? null;
             if (!$siteId) {
                 sendResponse(['error' => 'Site ID required'], 400);
@@ -215,10 +123,6 @@ try {
             break;
             
         case 'check-site':
-            if (!$auth->isLoggedIn()) {
-                sendResponse(['error' => 'Unauthorized'], 401);
-            }
-            
             if ($method !== 'POST') {
                 sendResponse(['error' => 'Method not allowed'], 405);
             }
@@ -233,10 +137,6 @@ try {
             break;
             
         case 'check-all':
-            if (!$auth->isLoggedIn()) {
-                sendResponse(['error' => 'Unauthorized'], 401);
-            }
-            
             if ($method !== 'POST') {
                 sendResponse(['error' => 'Method not allowed'], 405);
             }
@@ -253,10 +153,6 @@ try {
             break;
             
         case 'stats':
-            if (!$auth->isLoggedIn()) {
-                sendResponse(['error' => 'Unauthorized'], 401);
-            }
-            
             if ($method !== 'GET') {
                 sendResponse(['error' => 'Method not allowed'], 405);
             }

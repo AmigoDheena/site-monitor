@@ -15,67 +15,8 @@
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-    <!-- Login Page -->
-    <section id="loginPage" class="hero login-hero is-fullheight">
-        <div class="hero-body">
-            <div class="container">
-                <div class="columns is-centered">
-                    <div class="column is-narrow">
-                        <div class="card login-card">
-                            <header class="card-header">
-                                <p class="card-header-title">
-                                    <span class="icon">
-                                        <i class="fas fa-shield-alt"></i>
-                                    </span>
-                                    <span>Site Monitor Login</span>
-                                </p>
-                            </header>
-                            <div class="card-content">
-                                <div id="loginAlert"></div>
-                                <form id="loginForm">
-                                    <div class="field">
-                                        <label class="label">Username</label>
-                                        <div class="control has-icons-left">
-                                            <input class="input" type="text" id="username" name="username" 
-                                                   placeholder="Enter your username" required>
-                                            <span class="icon is-small is-left">
-                                                <i class="fas fa-user"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="field">
-                                        <label class="label">Password</label>
-                                        <div class="control has-icons-left">
-                                            <input class="input" type="password" id="password" name="password" 
-                                                   placeholder="Enter your password" required>
-                                            <span class="icon is-small is-left">
-                                                <i class="fas fa-lock"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="field">
-                                        <div class="control">
-                                            <button type="submit" class="button is-primary is-fullwidth">
-                                                <span class="icon">
-                                                    <i class="fas fa-sign-in-alt"></i>
-                                                </span>
-                                                <span>Login</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Dashboard -->
-    <div id="dashboard" class="is-hidden">
+    <div id="dashboard">
         <!-- Navigation Header -->
         <nav class="navbar dashboard-header" role="navigation">
             <div class="navbar-brand">
@@ -89,21 +30,11 @@
             
             <div class="navbar-menu">
                 <div class="navbar-end">
-                    <div class="navbar-item has-dropdown is-hoverable">
-                        <a class="navbar-link">
-                            <span class="icon">
-                                <i class="fas fa-user"></i>
-                            </span>
-                            <span id="userDisplay">Admin</span>
-                        </a>
-                        <div class="navbar-dropdown is-right">
-                            <a class="navbar-item" onclick="app.logout()">
-                                <span class="icon">
-                                    <i class="fas fa-sign-out-alt"></i>
-                                </span>
-                                <span>Logout</span>
-                            </a>
-                        </div>
+                    <div class="navbar-item">
+                        <span class="icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </span>
+                        <span>Professional Monitor</span>
                     </div>
                 </div>
             </div>
