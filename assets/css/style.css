@@ -14,30 +14,6 @@
     --radius-large: 8px;
 }
 
-/* Login Page Customization */
-.login-hero {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 100vh;
-}
-
-.login-card {
-    max-width: 400px;
-    margin: 0 auto;
-    border-radius: var(--radius-large);
-    box-shadow: var(--shadow-medium);
-}
-
-.login-card .card-header {
-    background: linear-gradient(135deg, var(--primary-color), #5a67d8);
-    color: white;
-    border-radius: var(--radius-large) var(--radius-large) 0 0;
-}
-
-.login-card .card-header-title {
-    color: white;
-    justify-content: center;
-}
-
 /* Dashboard Header */
 .dashboard-header {
     background: white;

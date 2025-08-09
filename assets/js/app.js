@@ -1,6 +1,6 @@
 /**
  * Site Monitor Application
- * Professional Dashboard JavaScript
+ * Professional Dashboard JavaScript - No Authentication Required
  */
 
 class SiteMonitor {
@@ -14,8 +14,6 @@ class SiteMonitor {
         
         this.state = {
             sites: [],
-            isLoggedIn: false,
-            currentUser: null,
             autoRefreshInterval: null
         };
         
@@ -24,16 +22,10 @@ class SiteMonitor {
     
     init() {
         this.bindEvents();
-        this.checkAuthStatus();
+        this.showDashboard();
     }
     
     bindEvents() {
-        // Login form
-        const loginForm = document.getElementById('loginForm');
-        if (loginForm) {
-            loginForm.addEventListener('submit', (e) => this.handleLogin(e));
-        }
-        
         // Add site form
         const addSiteForm = document.getElementById('addSiteForm');
         if (addSiteForm) {
@@ -42,7 +34,7 @@ class SiteMonitor {
         
         // Page visibility changes
         document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'visible' && this.state.isLoggedIn) {
+            if (document.visibilityState === 'visible') {
                 this.loadSites();
             }
         });
@@ -53,84 +45,9 @@ class SiteMonitor {
         });
     }
     
-    async checkAuthStatus() {
-        try {
-            const response = await this.apiCall('me');
-            if (response.success) {
-                this.state.currentUser = response.user;
-                this.state.isLoggedIn = true;
-                this.showDashboard();
-                return;
-            }
-        } catch (error) {
-            console.log('Not authenticated');
-        }
-        this.showLogin();
-    }
-    
-    async handleLogin(e) {
-        e.preventDefault();
-        
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        const loginBtn = e.target.querySelector('button[type="submit"]');
-        
-        this.setLoading(loginBtn, true);
-        
-        try {
-            const response = await this.apiCall('login', 'POST', {
-                username: username,
-                password: password,
-                remember_me: false
-            });
-            
-            if (response.success) {
-                this.state.currentUser = response.user;
-                this.state.isLoggedIn = true;
-                this.showDashboard();
-                this.showToast('Welcome back!', 'success');
-            } else {
-                this.showAlert('loginAlert', response.message || 'Login failed!', 'danger');
-            }
-        } catch (error) {
-            this.showAlert('loginAlert', 'Connection error. Please try again.', 'danger');
-        } finally {
-            this.setLoading(loginBtn, false);
-        }
-    }
-    
-    async logout() {
-        try {
-            await this.apiCall('logout', 'POST');
-        } catch (error) {
-            console.error('Logout error:', error);
-        }
-        
-        this.state.isLoggedIn = false;
-        this.state.currentUser = null;
-        this.cleanup();
-        this.showLogin();
-        this.showToast('Logged out successfully', 'info');
-    }
-    
-    showLogin() {
-        document.getElementById('loginPage').classList.remove('is-hidden');
-        document.getElementById('dashboard').classList.add('is-hidden');
-    }
-    
     showDashboard() {
-        document.getElementById('loginPage').classList.add('is-hidden');
-        document.getElementById('dashboard').classList.remove('is-hidden');
         this.loadSites();
         this.startAutoRefresh();
-        this.updateUserInfo();
-    }
-    
-    updateUserInfo() {
-        const userDisplay = document.getElementById('userDisplay');
-        if (userDisplay && this.state.currentUser) {
-            userDisplay.textContent = this.state.currentUser.username;
-        }
     }
     
     async handleAddSite(e) {
@@ -463,12 +380,7 @@ class SiteMonitor {
             const response = await fetch(url, options);
             const result = await response.json();
             
-            // For login endpoint, don't throw error on 401 if we got a JSON response
-            if (endpoint === 'login' && response.status === 401 && result) {
-                return result;
-            }
-            
-            // For other endpoints, throw error on non-ok status
+            // Check for successful response
             if (!response.ok) {
                 throw new Error(result.message || `HTTP error! status: ${response.status}`);
             }

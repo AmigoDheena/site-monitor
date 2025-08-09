@@ -16,6 +16,15 @@ class SiteMonitor {
     }
     
     private function initializeSitesFile() {
+        // Create data directory if it doesn't exist
+        if (!file_exists(DATA_DIR)) {
+            mkdir(DATA_DIR, 0750, true);
+            
+            // Create .htaccess to deny web access to data directory
+            $htaccess = DATA_DIR . '.htaccess';
+            file_put_contents($htaccess, "Deny from all\nOptions -Indexes");
+        }
+        
         if (!file_exists(SITES_FILE)) {
             $defaultData = [
                 'sites' => [],
